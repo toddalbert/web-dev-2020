@@ -38,29 +38,44 @@
         </span>
       </div>
     </nav>
-    <h1>Hello, <span id="welcomeMessage">World</span>!</h1>
-
+    <h1>Search for a Movie</h1>
     <form onsubmit="submitHandler(event)">
       <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" onchange="changeHandler(event)" class="form-control" id="name" aria-describedby="nameHelp">
-        <small id="nameHelp" class="form-text text-muted">We will not share your personal info with Dennis.</small>
+        <label for="name">Movie</label>
+        <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
+        <small id="nameHelp" class="form-text text-muted">Enter the name of a movie to see the poster.</small>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary">Search</button>
     </form>
   </div>
+  <div class="container-fluid" style="margin-top: 2em;">
+    <section id="movies">
+      <div class="card" style="width: 18rem;">
+        <img src="https://m.media-amazon.com/images/M/MV5BNjUyMTc4MDExMV5BMl5BanBnXkFtZTgwNDg0NDIwMjE@._V1_SX300.jpg" class="card-img-top" alt="Movie Poster for The Wizard of Oz">
+        <div class="card-body">
+          <h5 class="card-title">Wizard of Oz</h5>
+        </div>
+      </div>
+    </section>
+  </div>
   <script>
+    let welcomeElement = document.getElementById('welcomeMessage')
 
-    let element = document.getElementById('welcomeMessage')
-
-    function changeHandler(event) {
-      console.log(event.target.value)
-      element.innerHTML = event.target.value
-    }
     function submitHandler(event) {
       event.preventDefault() // stops the page from reloading
       let name = document.getElementById('name').value
-      element.innerHTML = name
+      // welcomeElement.innerHTML = name
+      fetch('https://sampleapis.com/movies/api/scifi-fantasy?title=' + name)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          // do other stuff with data... 
+          let card = document.querySelector('img')
+          card.src = data[0].posterURL
+          card.alt = 'Movie poster for ' + data[0].title
+          let title = document.querySelector('h5')
+          title.innerHTML = data[0].title
+        })
     }
   </script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
