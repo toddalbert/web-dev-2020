@@ -41,21 +41,25 @@
     <h1>Search for a Movie</h1>
     <form onsubmit="submitHandler(event)">
       <div class="form-group">
-        <label for="name">Movie</label>
-        <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
-        <small id="nameHelp" class="form-text text-muted">Enter the name of a movie to see the poster.</small>
+        <label for="genre">Genre</label>
+        <select name="genre" id="genre" onchange="submitHandler(event)" class="form-control">
+          <option>action-adventure</option>
+          <option>animation</option>
+          <option>classic</option>
+          <option>comedy</option>
+          <option>drama</option>
+          <option>horror</option>
+          <option>family</option>
+          <option>mystery</option>
+          <option>scifi-fantasy</option>
+          <option>western</option>
+        </select>
       </div>
-      <button type="submit" class="btn btn-primary">Search</button>
     </form>
   </div>
   <div class="container-fluid" style="margin-top: 2em;">
-    <section id="movies">
-      <div class="card" style="width: 18rem;">
-        <img src="https://m.media-amazon.com/images/M/MV5BNjUyMTc4MDExMV5BMl5BanBnXkFtZTgwNDg0NDIwMjE@._V1_SX300.jpg" class="card-img-top" alt="Movie Poster for The Wizard of Oz">
-        <div class="card-body">
-          <h5 class="card-title">Wizard of Oz</h5>
-        </div>
-      </div>
+    <section id="movies" class="card-columns">
+      <!-- Movie Cards Go Here -->
     </section>
   </div>
   <script>
@@ -63,17 +67,21 @@
 
     function submitHandler(event) {
       event.preventDefault() // stops the page from reloading
-      let name = document.getElementById('name').value
+      let genre = document.getElementById('genre').value // horror
       // welcomeElement.innerHTML = name
-      fetch('https://sampleapis.com/movies/api/scifi-fantasy?title=' + name)
+      fetch('https://sampleapis.com/movies/api/' + genre)
         .then(response => response.json())
         .then(data => {
           console.log(data)
-          let card = document.querySelector('img')
-          card.src = data[0].posterURL
-          card.alt = 'Movie poster for ' + data[0].title
-          let title = document.querySelector('h5')
-          title.innerHTML = data[0].title
+          let movieCardArray = data.map(movie => {
+            return `<div class="card" style="width: 18rem;">
+                      <img src="${movie.posterURL}" class="card-img-top" alt="Movie Poster for ${movie.title}">
+                      <div class="card-body">
+                        <h5 class="card-title">${movie.title}</h5>
+                      </div>
+                    </div>`
+          })
+          document.getElementById('movies').innerHTML = movieCardArray.join(' ')
         })
     }
   </script>
